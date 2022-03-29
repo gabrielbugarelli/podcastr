@@ -1,9 +1,49 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps } from 'next'
+import { getAllPodcasts } from '../service/homeService'
 
-const Home: NextPage = () => {
+type PodcastType = {
+  episodes: [
+    {
+      id: string,
+      title: string,
+      members: string,
+      published_at: string,
+      thumbnail: string,
+      description: string,
+      file: {
+        url: string,
+        type: string,
+        duration: number
+      }
+    }
+  ]
+}
+
+const Home = ({episodes}: PodcastType) => {
+
   return (
-    <h1>index</h1>
+    <>
+      {episodes.map(item => {
+        return (
+          <h1 key={item.id}>
+            {item.title}
+          </h1>
+        )
+      })}
+    </>
   )
 }
 
-export default Home
+export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const data = await getAllPodcasts();
+  
+  return {
+    props: {
+      episodes: data
+    },
+
+    revalidate: 60 * 60 * 8
+  }
+}
