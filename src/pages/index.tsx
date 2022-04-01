@@ -1,8 +1,11 @@
 import type { GetStaticProps } from 'next'
+import Image from 'next/image';
 import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { getAllPodcasts } from '../service/homeService'
 import { convertDurationToTimeString } from '../utils/convertionDurationToTimeString';
+
+import styles from './home.module.scss';
 
 type Episode = {
   id: string;
@@ -16,21 +19,48 @@ type Episode = {
 }
 
 type HomeProps = {
-  episodes: Episode[];
+  latestEpisodes: Episode[];
+  allEpisodes: Episode[];
 }
 
-const Home = ({episodes}: HomeProps) => {
+const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
 
   return (
-    <>
-      {episodes.map(item => {
-        return (
-          <h1 key={item.id}>
-            {item.title}
-          </h1>
-        )
-      })}
-    </>
+    <div className={styles.homePage}>
+      <section className={styles.latestEpisodes}>
+        <h2>Útilmos lançamentos</h2>
+
+        <ul>
+          {latestEpisodes.map(episode => {
+            return (
+              <li key={episode.id}>
+                <img
+                  src={episode.thumbnail} 
+                  alt={episode.title} 
+                  width={192}
+                  height={192}
+                />
+
+                <div className={styles.episodesDetails}>
+                  <a href="#">{episode.title}</a>
+                  <p>{episode.members}</p>
+                  <span>{episode.publishedAt}</span>
+                  <span>{episode.durationAsString}</span>
+                </div>
+
+                <button type="button">
+                  <img src="/play-green.svg" alt="Tocar episódio" />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+
+      <section className={styles.allEpisodes}>
+        
+      </section>
+    </div>
   )
 }
 
@@ -52,11 +82,15 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   });
 
+  const latestEpisodes = episodes.slice(0, 2); // pega os dois últimos episódios;
+  const allEpisodes = episodes.slice(2, episodes.length); // pega todos os episódios restantes;
+
   return {
     props: {
-      episodes
+      latestEpisodes,
+      allEpisodes
     },
 
-    revalidate: 60 * 60 * 8
+    revalidate: 60 * 60 * 8 // recompila a página estática a cada oito horas
   }
 }
