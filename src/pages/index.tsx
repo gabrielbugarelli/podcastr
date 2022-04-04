@@ -1,7 +1,8 @@
 import type { GetStaticProps } from 'next'
 import { format, parseISO } from 'date-fns';
+import Link from 'next/link';
 import ptBR from 'date-fns/locale/pt-BR';
-import { getAllPodcasts } from '../service/homeService'
+import { getAllPodcasts } from '../services/homeService';
 import { convertDurationToTimeString } from '../utils/convertionDurationToTimeString';
 
 import styles from './home.module.scss';
@@ -27,7 +28,7 @@ const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
   return (
     <div className={styles.homePage}>
       <section className={styles.latestEpisodes}>
-        <h2>Útilmos lançamentos</h2>
+        <h2>Últimos lançamentos</h2>
 
         <ul>
           {latestEpisodes.map(episode => {
@@ -41,7 +42,9 @@ const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
                 />
 
                 <div className={styles.episodesDetails}>
-                  <a href="#">{episode.title}</a>
+                  <Link href={`/episodes/${episode.id}`}>
+                    <a target="_blank">{episode.title}</a>
+                  </Link>
                   <p>{episode.members}</p>
                   <span>{episode.publishedAt}</span>
                   <span>{episode.durationAsString}</span>
@@ -61,12 +64,14 @@ const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
 
         <table cellSpacing={0}>
           <thead>
-            <th></th>
-            <th>Podcast</th>
-            <th>Integrantes</th>
-            <th>Data</th>
-            <th>Duração</th>
-            <th></th>
+            <tr>
+              <th></th>
+              <th>Podcast</th>
+              <th>Integrantes</th>
+              <th>Data</th>
+              <th>Duração</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
             {allEpisodes.map(episode => {
@@ -76,7 +81,9 @@ const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
                     <img src={episode.thumbnail} alt={episode.title} width={120} />
                   </td>
                   <td>
-                    <a href="#">{episode.title}</a>
+                    <Link href={`/episodes/${episode.id}`}>
+                      <a target="_blank">{episode.title}</a>
+                    </Link>
                   </td>
                   <td>{episode.members}</td>
                   <td style={{width: 100}} >{episode.publishedAt}</td>

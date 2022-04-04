@@ -25,6 +25,7 @@ export const getAllPodcasts = (): Promise<PodcastType[]> => {
         _order: 'desc'
       }
     });
+
     resolve(response.data);
   })
-}
+};
