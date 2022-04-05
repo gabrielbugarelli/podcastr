@@ -7,6 +7,7 @@ import { getEpisodeById } from "../../services/episodeService";
 import { convertDurationToTimeString } from "../../utils/convertionDurationToTimeString";
 
 import styles from './episode.module.scss';
+import { getAllPodcasts } from "../../services/homeService";
 
 type PodcastType = {
   id: string,
@@ -64,10 +65,22 @@ const Episode = ( { episode }: EpisodeProps ) => {
 export default Episode;
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const data = await getAllPodcasts();
+
+  const paths = data.map(episode => {
+    return {
+      params: {
+        slug: episode.id
+      }
+    }
+  })
+
   return {
-    paths: [],
+    paths,
     fallback: "blocking",
   }
+
+  //incremental static regeneration
 }
 
 export const getStaticProps: GetStaticProps = async ( { params } ) => {
