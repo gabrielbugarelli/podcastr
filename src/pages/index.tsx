@@ -6,6 +6,7 @@ import { getAllPodcasts } from '../services/homeService';
 import { convertDurationToTimeString } from '../utils/convertionDurationToTimeString';
 
 import styles from './home.module.scss';
+import { usePlayerContext } from '../contexts/PlayerContext';
 
 type Episode = {
   id: string;
@@ -24,6 +25,8 @@ type HomeProps = {
 }
 
 const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
+
+  const { play } = usePlayerContext();
 
   return (
     <div className={styles.homePage}>
@@ -50,7 +53,7 @@ const Home = ({latestEpisodes, allEpisodes}: HomeProps) => {
                   <span>{episode.durationAsString}</span>
                 </div>
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Tocar episódio" />
                 </button>
               </li>
